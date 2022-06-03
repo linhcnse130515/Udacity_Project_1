@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.services.impl;
 
+import com.udacity.jwdnd.course1.cloudstorage.constants.CommonConstant;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.FileMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.File;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
@@ -26,16 +27,16 @@ public class FileServiceImpl implements FileService {
         Integer userId = userService.getUser(userName).getUserId();
 
         if (fileUpload.isEmpty()) {
-            return "There is no file to upload.";
-        } else if (fileUpload.getSize() > 1048576) {
-            return "Too large file size to upload. Maximum 1MB allowed";
+            return CommonConstant.NO_FILE_UPLOAD;
+        } else if (fileUpload.getSize() > CommonConstant.FILE_SIZE_1_MB) {
+            return CommonConstant.SIZE_TOO_LARGE;
         } else if (fileMapper.getFile(userId, fileUpload.getOriginalFilename()) != null) {
-            return "Filename already exist.";
+            return CommonConstant.FILE_EXIST;
         } else {
             File file = new File(null, fileUpload.getOriginalFilename(), fileUpload.getContentType(), Long.toString(fileUpload.getSize()), userId, fileUpload.getBytes());
             int result = fileMapper.insertFile(file);
             if (result < 0) {
-                return "There was an error upload your file. Please try again.";
+                return CommonConstant.UPLOAD_FILE_ERROR;
             }
         }
         return null;
@@ -51,7 +52,7 @@ public class FileServiceImpl implements FileService {
     public String deleteFile(Integer fileId) {
         int result = fileMapper.deleteFile(fileId);
         if (result < 0) {
-            return "There was an error delete your file. Please try again.";
+            return CommonConstant.DELETE_FILE_ERROR;
         }
         return null;
     }

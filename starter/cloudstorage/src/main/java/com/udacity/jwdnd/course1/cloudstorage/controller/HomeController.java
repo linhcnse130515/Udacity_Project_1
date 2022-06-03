@@ -34,10 +34,10 @@ public class HomeController {
     public String homeView(Model model, Principal principal) {
         int userId = userService.getUser(principal.getName()).getUserId();
 
+        model.addAttribute("encryptionService", encryptionService);
         model.addAttribute("fileList", fileMapper.getFiles(userId));
         model.addAttribute("noteList", noteMapper.getNotes(userId));
         model.addAttribute("credentialList", credentialMapper.getCredential(userId));
-        model.addAttribute("encryptionService", encryptionService);
 
         return "home";
     }

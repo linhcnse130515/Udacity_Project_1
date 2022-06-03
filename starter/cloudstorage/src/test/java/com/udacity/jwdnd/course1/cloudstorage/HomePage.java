@@ -53,14 +53,14 @@ public class HomePage {
         noteSubmitBtn.submit();
     }
 
-    public void createCred(String credUrl, String credUsername, String credPassword) {
+    public void createCredential(String credUrl, String credUsername, String credPassword) {
         this.credUrl.sendKeys(credUrl);
         this.credUsername.sendKeys(credUsername);
         this.credPassword.sendKeys(credPassword);
         credSubmitBtn.submit();
     }
 
-    public void editCred(String credUrl, String credUsername, String credPassword) {
+    public void editCredential(String credUrl, String credUsername, String credPassword) {
         this.credUrl.clear();
         this.credUrl.sendKeys(credUrl);
         this.credUsername.clear();

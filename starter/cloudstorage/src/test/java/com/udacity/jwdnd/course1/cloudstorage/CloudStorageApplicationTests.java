@@ -53,7 +53,7 @@ class CloudStorageApplicationTests {
     }
 
     @Test
-    public void testSignup() {
+    public void testSignupAndLogin() {
         String firstName = "a", lastName = "b", username = "c", password = "d";
 
         WebDriverWait wait = new WebDriverWait(driver, 10);
@@ -64,11 +64,10 @@ class CloudStorageApplicationTests {
         driver.get("http://localhost:" + this.port + "/signup");
         signup.signup(firstName, lastName, username, password);
         driver.get("http://localhost:" + this.port + "/login");
-        WebElement marker = wait.until(webDriver -> webDriver.findElement(By.name("username")));
+        wait.until(webDriver -> webDriver.findElement(By.name("username")));
         login.login(username, password);
-        marker = wait.until(webDriver -> webDriver.findElement(By.id("nav-files-tab")));
         home.logout();
-        marker = wait.until(webDriver -> webDriver.findElement(By.name("username")));
+        wait.until(webDriver -> webDriver.findElement(By.name("username")));
         driver.get("http://localhost:" + this.port + "/home");
         Assertions.assertNotEquals("Home", driver.getTitle());
     }
@@ -77,7 +76,7 @@ class CloudStorageApplicationTests {
     public void testNoteFunction() {
         String firstName = "a", lastName = "b", username = "c", password = "d";
         String noteTitle = "created!", noteDescription = "created!";
-        String editedTitle = "changed!", editedDescription = "changed!";
+        String editedTitle = "edited!", editedDescription = "edited!";
         WebDriverWait wait = new WebDriverWait(driver, 10);
         signup = new SignupPage(driver);
         login = new LoginPage(driver);
@@ -86,35 +85,41 @@ class CloudStorageApplicationTests {
         driver.get("http://localhost:" + this.port + "/signup");
         signup.signup(firstName, lastName, username, password);
         driver.get("http://localhost:" + this.port + "/login");
-        WebElement marker = wait.until(ExpectedConditions.elementToBeClickable(By.name("username")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.name("username")));
         login.login(username, password);
         driver.get("http://localhost:" + this.port + "/home");
-        marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab")));
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab")));
         driver.findElement(By.id("nav-notes-tab")).click();
-        marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("upload-note-btn")));
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("upload-note-btn")));
         driver.findElement(By.id("upload-note-btn")).click();
-        marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("note-title")));
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("note-title")));
         home.createNote(noteTitle, noteDescription);
+
         driver.get("http://localhost:" + this.port + "/home");
-        marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab")));
         driver.findElement(By.id("nav-notes-tab")).click();
-        marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("note-row-title")));
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("note-row-title")));
         String result = driver.findElement(By.id("note-row-title")).getText();
         Assertions.assertEquals(result, noteTitle);
 
         driver.findElement(By.id("note-edit")).click();
-        marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("note-title")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("note-title")));
         home.editNote(editedTitle, editedDescription);
         driver.get("http://localhost:" + this.port + "/home");
-        marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab")));
         driver.findElement(By.id("nav-notes-tab")).click();
-        marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("note-row-title")));
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("note-row-title")));
         result = driver.findElement(By.id("note-row-title")).getText();
         Assertions.assertEquals(result, editedTitle);
 
         driver.findElement(By.id("note-delete")).click();
         driver.get("http://localhost:" + this.port + "/home");
-        marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab")));
         driver.findElement(By.id("nav-notes-tab")).click();
         boolean isExist;
         try {
@@ -140,21 +145,23 @@ class CloudStorageApplicationTests {
         driver.get("http://localhost:" + this.port + "/signup");
         signup.signup(firstName, lastName, username, password);
         driver.get("http://localhost:" + this.port + "/login");
-        WebElement marker = wait.until(ExpectedConditions.elementToBeClickable(By.name("username")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.name("username")));
         login.login(username, password);
         for (int i = 0; i < size; i++) {
             driver.get("http://localhost:" + this.port + "/home");
-            marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab")));
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab")));
             driver.findElement(By.id("nav-credentials-tab")).click();
-            marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("upload-cred-btn")));
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("upload-cred-btn")));
             driver.findElement(By.id("upload-cred-btn")).click();
-            marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-url")));
-            home.createCred(credUrl, credUsername, credPassword);
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-url")));
+            home.createCredential(credUrl, credUsername, credPassword);
         }
+
         driver.get("http://localhost:" + this.port + "/home");
-        marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab")));
         driver.findElement(By.id("nav-credentials-tab")).click();
-        marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("cred-row-url")));
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("cred-row-url")));
         List<WebElement> resultList = driver.findElements(By.id("cred-row-url"));
         Assertions.assertEquals(resultList.size(), size);
         WebElement result = driver.findElement(By.id("cred-row-password"));
@@ -162,24 +169,27 @@ class CloudStorageApplicationTests {
 
         resultList = driver.findElements(By.id("cred-edit"));
         resultList.get(0).click();
-        marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-password")));
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-password")));
         String viewPassword = driver.findElement(By.id("credential-password")).getText();
         Assertions.assertNotEquals(viewPassword, credPassword);
 
         for (int i = 0; i < size; i++) {
             driver.get("http://localhost:" + this.port + "/home");
-            marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab")));
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab")));
             driver.findElement(By.id("nav-credentials-tab")).click();
-            marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("cred-edit")));
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("cred-edit")));
             resultList = driver.findElements(By.id("cred-edit"));
             resultList.get(i).click();
-            marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-url")));
-            home.editCred(editedUrl, editedUsername, editedPassword);
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("credential-url")));
+            home.editCredential(editedUrl, editedUsername, editedPassword);
         }
+
         driver.get("http://localhost:" + this.port + "/home");
-        marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab")));
         driver.findElement(By.id("nav-credentials-tab")).click();
-        marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("cred-row-url")));
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("cred-row-url")));
         resultList = driver.findElements(By.id("cred-row-url"));
         for (int i = 0; i < size; i++) {
             Assertions.assertEquals(resultList.get(i).getText(), editedUrl);
@@ -187,16 +197,18 @@ class CloudStorageApplicationTests {
 
         for (int i = 0; i < size; i++) {
             driver.get("http://localhost:" + this.port + "/home");
-            marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab")));
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab")));
             driver.findElement(By.id("nav-credentials-tab")).click();
-            marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("cred-delete")));
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("cred-delete")));
             result = driver.findElement(By.id("cred-delete"));
             result.click();
         }
+
         driver.get("http://localhost:" + this.port + "/home");
-        marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-credentials-tab")));
         driver.findElement(By.id("nav-credentials-tab")).click();
-        marker = wait.until(ExpectedConditions.elementToBeClickable(By.id("upload-cred-btn")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("upload-cred-btn")));
+
         boolean isExist;
         try {
             driver.findElement(By.id("cred-delete"));

@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.services.impl;
 
+import com.udacity.jwdnd.course1.cloudstorage.constants.CommonConstant;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.HashService;
@@ -19,23 +20,31 @@ public class UserServiceImpl implements UserService {
         this.hashService = hashService;
     }
 
-    @Override
-    public boolean isUsernameAvailable(String username) {
-        return userMapper.getUser(username) == null;
-    }
-
-    @Override
     public int createUser(User user) {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
         random.nextBytes(salt);
         String encodedSalt = Base64.getEncoder().encodeToString(salt);
-        String hashedPassword = hashService.getHashedValue(user.getPassword(), encodedSalt);
-        return userMapper.insertUser(new User(null, user.getUsername(), encodedSalt, hashedPassword, user.getFirstName(), user.getLastName()));
+        String passwordHashed = hashService.getHashedValue(user.getPassword(), encodedSalt);
+        User newUser = new User(null, user.getUsername(), encodedSalt, passwordHashed, user.getFirstName(), user.getLastName());
+        return userMapper.insertUser(newUser);
     }
 
     @Override
     public User getUser(String username) {
         return userMapper.getUser(username);
+    }
+
+    @Override
+    public String signupUser(User user) {
+        if (userMapper.getUser(user.getUsername()) != null) {
+            return CommonConstant.USER_EXIST;
+        } else {
+            int result = this.createUser(user);
+            if (result < 0) {
+                return CommonConstant.SIGNUP_ERROR;
+            }
+        }
+        return null;
     }
 }
